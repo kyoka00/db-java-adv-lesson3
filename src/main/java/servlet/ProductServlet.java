@@ -1,6 +1,8 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,33 +42,62 @@ public class ProductServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		String productIdS = request.getParameter("product_id");
+		String productName = request.getParameter("product_name");
+		String priceS = request.getParameter("price");
 		String msg;
 		System.out.println("productServlet");
+		List<Product> result;
 		
-		
-		if (!ParamUtil.isNullOrEmpty(productIdS)){
-			Integer productId = Integer.parseInt(productIdS);
-			Product p = new Product();
+		if (!ParamUtil.isNullOrEmpty(productName) && !ParamUtil.isNullOrEmpty(priceS)){
+			Integer price = Integer.parseInt(priceS);
+			
 					
-			p= ProductService.dbSearch(productId);
-			if ( p != null) {
-			int id = p.getProductId();
-			request.setAttribute("id", id);
+			result = ProductService.dbSearchByNameAndPrice(productName, price);
+			if (Objects.isNull(result)) {
+				
+			request.setAttribute("result", result);
+			msg = "データを取得しました";
 			
-			String name = p.getProductName();
-			request.setAttribute("name", name);
+			}else {
+				msg = "対象のデータはありません";
+			}
+				
+				
+		}else if(!ParamUtil.isNullOrEmpty(productName)) {
 			
-			int price = p.getPrice();
-			request.setAttribute("price", price);
+			result = ProductService.dbSearchByName(productName);
+			if (Objects.isNull(result)) {
+				
+			request.setAttribute("result", result);
 			
 			msg = "データを取得しました";
 			}else {
 				msg = "対象のデータはありません";
 			}
-		}else {
-			msg = "product_idを入力してください";
+		}else if(!ParamUtil.isNullOrEmpty(priceS)) {
+			Integer price = Integer.parseInt(priceS);
+					
+			result = ProductService.dbSearchByPrice(price);
+			if ( result != null) {
+				
+			request.setAttribute("result", result);
 			
+			msg = "データを取得しました";
+			}else {
+				msg = "対象のデータはありません";
+			}
+			
+		}else {
+					
+			result = ProductService.findAll();
+			if (Objects.isNull(result)) {
+				
+			request.setAttribute("result", result);
+			
+			msg = "データを取得しました";
+			}else {
+				msg = "対象のデータはありません";
+			}
 		}
 		 request.setAttribute("msg", msg);
 		 

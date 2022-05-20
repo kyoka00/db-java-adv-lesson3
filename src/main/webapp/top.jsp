@@ -13,8 +13,11 @@
 <h1>検索条件を入力してください</h1>
 
 <form action ="ProductServlet" method = "post">
-<label>product_id:</label>
-<input type = "number" name = "product_id"><br>
+<label>product_name:</label>
+<input type ="text" name = "product_name" value="${param.productName}"><br>
+<label>price:</label>
+<input type = "number" name = "price" value="${param.price}"><br>
+
 <button type = "submit">検索</button>
 
 </form>
